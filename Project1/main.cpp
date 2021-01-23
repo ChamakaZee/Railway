@@ -13,9 +13,12 @@ GLfloat camY = 0.0f;
 GLfloat camX = 0.0f;
 GLfloat camZ = 0.0f;
 
+GLUquadricObj* qobj;
+
 void init() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
+	qobj = gluNewQuadric();
 }
 
 void drawAxes() {
@@ -56,6 +59,88 @@ void drawGrid() {
 	glEnd();
 }
 
+void drawCylinder(GLdouble base, GLdouble top, GLdouble height, GLdouble slices, GLdouble stacks) {
+	glPushMatrix();
+	// base
+	glBegin(GL_TRIANGLE_FAN);
+	glColor3f(1.0, 0.5, 0.5);
+	glVertex3f(0.0, 0.0, 0.0);
+	for (float i = 0; i < 360; i += 1.2) {
+		glVertex3f(base * cos(i), base * sin(i), 0.0);
+		glVertex3f(base * cos(i + 0.2), base * sin(i + 0.2), 0.0);
+	}
+	glEnd();
+	// cylinder
+	glColor3f(0.5, 0.0, 1.0);
+	gluCylinder(qobj, base, top, height, slices, stacks);
+	// top
+	glTranslatef(0.0, 0.0, height);
+	glColor3f(1.0, 1.0, 0.5);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3f(0.0, 0.0, 0.0);
+	for (float i = 0; i < 360; i += 0.2) {
+		glVertex3f(top * cos(i), top * sin(i), 0.0);
+		glVertex3f(top * cos(i + 0.2), top * sin(i + 0.2), 0.0);
+	}
+	glEnd();
+	glPopMatrix();
+}
+
+void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h, GLfloat l) {
+	glBegin(GL_QUADS);
+
+	// front
+	glColor3f(1.0, 0.5, 0.5);
+	glVertex3f(x, y, z + l);
+	glVertex3f(x + w, y, z + l);
+	glVertex3f(x + w, y + h, z + l);
+	glVertex3f(x, y + h, z + l);
+
+	// top
+	glColor3f(1.0, 1.0, 0.5);
+	glVertex3f(x, y + h, z);
+	glVertex3f(x, y + h, z + l);
+	glVertex3f(x + w, y + h, z + l);
+	glVertex3f(x + w, y + h, z);
+
+	// back
+	glColor3f(1.0, 0.5, 1.0);
+	glVertex3f(x, y, z);
+	glVertex3f(x, y + h, z);
+	glVertex3f(x + w, y + h, z);
+	glVertex3f(x + w, y, z);
+
+	// bottom
+	glColor3f(0.5, 1.0, 1.0);
+	glVertex3f(x, y, z);
+	glVertex3f(x + w, y, z);
+	glVertex3f(x + w, y, z + l);
+	glVertex3f(x, y, z + l);
+
+	// left
+	glColor3f(0.5, 1.0, 0.5);
+	glVertex3f(x, y, z);
+	glVertex3f(x, y, z + l);
+	glVertex3f(x, y + h, z + l);
+	glVertex3f(x, y + h, z);
+
+	// right
+	glColor3f(0.5, 0.5, 1.0);
+	glVertex3f(x + w, y, z);
+	glVertex3f(x + w, y + h, z);
+	glVertex3f(x + w, y + h, z + l);
+	glVertex3f(x + w, y, z + l);
+	glEnd();
+}
+
+void drawRailway(GLfloat len) {
+	drawCube(0.3, 0.5, 0, 0.3, 0.3, len);
+	drawCube(3.7, 0.5, 0, 0.3, 0.3, len);
+	for (int i = 0; i < len; i += 2) {
+		drawCube(-0.3, 0, i, 5, 0.3, 0.8);
+	}
+}
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -71,6 +156,8 @@ void display() {
 	drawGrid();
 
 	drawAxes();
+
+	drawRailway(100);
 	glPopMatrix();
 
 	glutSwapBuffers();
