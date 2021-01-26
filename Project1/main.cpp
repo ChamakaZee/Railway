@@ -168,6 +168,64 @@ void drawSignalPost() {
 	glPopMatrix();
 }
 
+void drawTrainCoach(GLfloat x, GLfloat y, GLfloat z) {
+	glPushMatrix();
+	glTranslatef(0.0 + x, 0.0 + y, 0.1 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.275 + x, 0.0 + y, 0.1 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.0 + x, 0.0 + y, 0.3 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.275 + x, 0.0 + y, 0.3 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.0 + x, 0.0 + y, 1.25 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.275 + x, 0.0 + y, 1.25 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.0 + x, 0.0 + y, 1.05 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.275 + x, 0.0 + y, 1.05 + z);
+	glRotatef(90, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	drawCube(0.0 + x, 0.1 + y, 0.0 + z, 0.325, 0.325, 1.35);
+}
+
+void drawTrain(int len) {
+	for (int i = 0; i < len; i++) {
+		drawTrainCoach(0.0, 0.0, 1.45 * i);
+	}
+}
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -184,7 +242,10 @@ void display() {
 
 	drawAxes();
 
-	drawRailway(100);
+	//drawRailway(100);
+	//drawSignalPost();
+	drawTrain(5);
+
 	glPopMatrix();
 
 	glutSwapBuffers();
@@ -198,24 +259,27 @@ void keyboardSpecial(int key, int x, int y) {
 		moveZ -= 1;
 
 	if (key == GLUT_KEY_LEFT)
-		rotY -= 5.0;
+		moveX += 1;
 
 	if (key == GLUT_KEY_RIGHT)
-		rotY += 5.0;
+		moveX -= 1;
 
 	glutPostRedisplay();
 }
 
 void keyboard(unsigned char key, int x, int y) {
-	if (key == 'w')
+	if (key == 'w') {
 		camY += 0.5;
-	if (key == 's')
+	}
+	else if (key == 's') {
 		camY -= 0.5;
-
-	if (key == 'c')
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	if (key == 'C')
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	}
+	else if (key == 'a') {
+		rotY += 3.0;
+	}
+	else if (key == 'd') {
+		rotY -= 3.0;
+	}
 
 	glutPostRedisplay();
 }
