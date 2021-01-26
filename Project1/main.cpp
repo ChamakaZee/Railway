@@ -141,6 +141,33 @@ void drawRailway(GLfloat len) {
 	}
 }
 
+void drawSignalPost() {
+	glPushMatrix();
+	glRotatef(90, -1, 0, 0);
+	gluCylinder(gluNewQuadric(), 0.4, 0.4, 10, 200, 200);
+
+	glPushMatrix();
+	glTranslatef(0, 0.5, 10.8);
+	glRotatef(90, -1, 0, 0);
+	drawCylinder(0.5, 0.5, 0.1, 200, 200);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, 0.5, 12);
+	glRotatef(90, -1, 0, 0);
+	drawCylinder(0.5, 0.5, 0.1, 200, 200);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0, 0.5, 13.2);
+	glRotatef(90, -1, 0, 0);
+	drawCylinder(0.5, 0.5, 0.1, 200, 200);
+	glPopMatrix();
+
+	drawCube(-1, -0.5, 10, 2, 1, 4);
+	glPopMatrix();
+}
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
