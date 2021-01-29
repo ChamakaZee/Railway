@@ -18,7 +18,13 @@ GLUquadricObj* qobj;
 void init() {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glEnable(GL_DEPTH_TEST);
+
 	qobj = gluNewQuadric();
+
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_CULL_FACE);
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 }
 
 void drawAxes() {
@@ -78,7 +84,7 @@ void drawCylinder(GLdouble base, GLdouble top, GLdouble height, GLdouble slices,
 	glColor3f(1.0, 1.0, 0.5);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0.0, 0.0, 0.0);
-	for (float i = 0; i < 360; i += 0.2) {
+	for (float i = 360; i > 0; i -= 0.2) {
 		glVertex3f(top * cos(i), top * sin(i), 0.0);
 		glVertex3f(top * cos(i + 0.2), top * sin(i + 0.2), 0.0);
 	}
@@ -168,6 +174,82 @@ void drawSignalPost() {
 	glPopMatrix();
 }
 
+void drawCar() {
+	glPushMatrix();
+
+	// Sides - Windows
+	glColor3f(1.0, 0.0, 0.0);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3f(0.24, 0.2, 0.0);
+	glVertex3f(0.36, 0.4, 0.0);
+	glVertex3f(0.84, 0.4, 0.0);
+	glVertex3f(0.96, 0.2, 0.0);
+	glEnd();
+
+	glColor3f(0.0, 0.5, 0.5);
+	glBegin(GL_TRIANGLE_FAN);
+	glVertex3f(0.24, 0.2, 0.3);
+	glVertex3f(0.96, 0.2, 0.3);
+	glVertex3f(0.84, 0.4, 0.3);
+	glVertex3f(0.36, 0.4, 0.3);
+	glEnd();
+
+	// Top
+	glColor3f(1.0, 0.0, 0.5);
+	glBegin(GL_QUADS);
+	glVertex3f(0.36, 0.4, 0.0);
+	glVertex3f(0.36, 0.4, 0.3);
+	glVertex3f(0.84, 0.4, 0.3);
+	glVertex3f(0.84, 0.4, 0.0);
+	glEnd();
+
+	// Windscreen
+	glColor3f(1.0, 0.5, 0.0);
+	glBegin(GL_QUADS);
+	glVertex3f(0.24, 0.2, 0.3);
+	glVertex3f(0.36, 0.4, 0.3);
+	glVertex3f(0.36, 0.4, 0.0);
+	glVertex3f(0.24, 0.2, 0.0);
+	glEnd();
+
+	// Back Window
+	glColor3f(1.0, 0.5, 0.5);
+	glBegin(GL_QUADS);
+	glVertex3f(0.84, 0.4, 0.0);
+	glVertex3f(0.84, 0.4, 0.3);
+	glVertex3f(0.96, 0.2, 0.3);
+	glVertex3f(0.96, 0.2, 0.0);
+	glEnd();
+
+	// Body
+	drawCube(0.0, 0.0, 0.0, 1.2, 0.2, 0.3);
+
+	// Wheels
+	glPushMatrix();
+	glTranslatef(0.2, 0.0, 0.04);
+	glRotatef(180, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.2, 0.0, 0.26);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.9, 0.0, 0.04);
+	glRotatef(180, 0, 1, 0);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.9, 0.0, 0.26);
+	drawCylinder(0.1, 0.1, 0.05, 50, 50);
+	glPopMatrix();
+
+	glPopMatrix();
+}
+
 void drawTrainCoach(GLfloat x, GLfloat y, GLfloat z) {
 	glPushMatrix();
 	glTranslatef(0.0 + x, 0.0 + y, 0.1 + z);
@@ -241,10 +323,7 @@ void display() {
 	drawGrid();
 
 	drawAxes();
-
-	//drawRailway(100);
-	//drawSignalPost();
-	drawTrain(5);
+	drawCar();
 
 	glPopMatrix();
 
