@@ -71,7 +71,7 @@ void drawCylinder(GLdouble base, GLdouble top, GLdouble height, GLdouble slices,
 	glBegin(GL_TRIANGLE_FAN);
 	glColor3f(1.0, 0.5, 0.5);
 	glVertex3f(0.0, 0.0, 0.0);
-	for (float i = 0; i < 360; i += 1.2) {
+	for (float i = 360; i >= 0; i -= 1.2) {
 		glVertex3f(base * cos(i), base * sin(i), 0.0);
 		glVertex3f(base * cos(i + 0.2), base * sin(i + 0.2), 0.0);
 	}
@@ -84,7 +84,7 @@ void drawCylinder(GLdouble base, GLdouble top, GLdouble height, GLdouble slices,
 	glColor3f(1.0, 1.0, 0.5);
 	glBegin(GL_TRIANGLE_FAN);
 	glVertex3f(0.0, 0.0, 0.0);
-	for (float i = 360; i > 0; i -= 0.2) {
+	for (float i = 0; i < 360; i += 1.2) {
 		glVertex3f(top * cos(i), top * sin(i), 0.0);
 		glVertex3f(top * cos(i + 0.2), top * sin(i + 0.2), 0.0);
 	}
@@ -188,26 +188,26 @@ void drawCar() {
 
 	glColor3f(0.0, 0.5, 0.5);
 	glBegin(GL_TRIANGLE_FAN);
-	glVertex3f(0.24, 0.2, 0.3);
-	glVertex3f(0.96, 0.2, 0.3);
-	glVertex3f(0.84, 0.4, 0.3);
-	glVertex3f(0.36, 0.4, 0.3);
+	glVertex3f(0.24, 0.2, 0.4);
+	glVertex3f(0.96, 0.2, 0.4);
+	glVertex3f(0.84, 0.4, 0.4);
+	glVertex3f(0.36, 0.4, 0.4);
 	glEnd();
 
 	// Top
 	glColor3f(1.0, 0.0, 0.5);
 	glBegin(GL_QUADS);
 	glVertex3f(0.36, 0.4, 0.0);
-	glVertex3f(0.36, 0.4, 0.3);
-	glVertex3f(0.84, 0.4, 0.3);
+	glVertex3f(0.36, 0.4, 0.4);
+	glVertex3f(0.84, 0.4, 0.4);
 	glVertex3f(0.84, 0.4, 0.0);
 	glEnd();
 
 	// Windscreen
 	glColor3f(1.0, 0.5, 0.0);
 	glBegin(GL_QUADS);
-	glVertex3f(0.24, 0.2, 0.3);
-	glVertex3f(0.36, 0.4, 0.3);
+	glVertex3f(0.24, 0.2, 0.4);
+	glVertex3f(0.36, 0.4, 0.4);
 	glVertex3f(0.36, 0.4, 0.0);
 	glVertex3f(0.24, 0.2, 0.0);
 	glEnd();
@@ -216,34 +216,32 @@ void drawCar() {
 	glColor3f(1.0, 0.5, 0.5);
 	glBegin(GL_QUADS);
 	glVertex3f(0.84, 0.4, 0.0);
-	glVertex3f(0.84, 0.4, 0.3);
-	glVertex3f(0.96, 0.2, 0.3);
+	glVertex3f(0.84, 0.4, 0.4);
+	glVertex3f(0.96, 0.2, 0.4);
 	glVertex3f(0.96, 0.2, 0.0);
 	glEnd();
 
 	// Body
-	drawCube(0.0, 0.0, 0.0, 1.2, 0.2, 0.3);
+	drawCube(0.0, 0.0, 0.0, 1.2, 0.2, 0.4);
 
 	// Wheels
 	glPushMatrix();
-	glTranslatef(0.2, 0.0, 0.04);
-	glRotatef(180, 0, 1, 0);
+	glTranslatef(0.2, 0.0, -0.01);
 	drawCylinder(0.1, 0.1, 0.05, 50, 50);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(0.2, 0.0, 0.26);
+	glTranslatef(0.2, 0.0, 0.36);
 	drawCylinder(0.1, 0.1, 0.05, 50, 50);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(0.9, 0.0, 0.04);
-	glRotatef(180, 0, 1, 0);
+	glTranslatef(0.9, 0.0, -0.01);
 	drawCylinder(0.1, 0.1, 0.05, 50, 50);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(0.9, 0.0, 0.26);
+	glTranslatef(0.9, 0.0, 0.36);
 	drawCylinder(0.1, 0.1, 0.05, 50, 50);
 	glPopMatrix();
 
@@ -323,7 +321,6 @@ void display() {
 	drawGrid();
 
 	drawAxes();
-	drawCar();
 
 	glPopMatrix();
 
