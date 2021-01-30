@@ -457,6 +457,36 @@ void drawTrain(int len) {
 	}
 }
 
+void drawTree() {
+	glPushMatrix();
+
+	glRotatef(90, -1, 0, 0);
+	gluCylinder(gluNewQuadric(), 0.4, 0.4, 3.0, 50, 50);
+
+	glTranslatef(0.0, 0.0, 3.0);
+	gluCylinder(gluNewQuadric(), 2.0, 0.0, 5.0, 50, 50);
+
+	glPushMatrix();
+	glRotatef(90, 0, -1, 0);
+
+	glBegin(GL_POLYGON);
+	for (GLfloat angle = 0.0; angle < 2 * PI; angle = angle + 0.1) {
+		GLfloat ysin = sin(angle);
+		GLfloat xcos = cos(angle);
+		GLfloat y = 2.0 * ysin;
+		GLfloat z = 2.0 * xcos;
+		GLfloat txX = xcos * 0.5 + 0.5;
+		GLfloat txY = ysin * 0.5 + 0.5;
+
+		glTexCoord2f(txX, txY); glVertex3f(0.0, y, z);
+	}
+	glVertex3f(0.0, 0.0, 2.0);
+	glEnd();
+	glPopMatrix();
+
+	glPopMatrix();
+}
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
