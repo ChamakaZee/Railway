@@ -6,7 +6,7 @@
 #include <GL/glut.h>
 
 #define PI 3.1415927
-#define TX 18
+#define TX 20
 using namespace std;
 
 GLfloat moveX = 0.0f;
@@ -106,6 +106,8 @@ void loadExternalTextures()
 	image[15] = getbmp("res/light1.bmp");
 	image[16] = getbmp("res/light2.bmp");
 	image[17] = getbmp("res/light3.bmp");
+	image[18] = getbmp("res/bark.bmp");
+	image[19] = getbmp("res/pine.bmp");
 
 	for (int i = 0; i < TX; i++) {
 		glBindTexture(GL_TEXTURE_2D, texture[i]);
@@ -499,10 +501,10 @@ void display() {
 	glRotatef(rotY, 0.0f, 1.0f, 0.0f);
 	glRotatef(rotZ, 0.0f, 0.0f, 1.0f);
 
-	/*drawGrid();
-	drawAxes();*/
+	drawGrid();
+	drawAxes();
 
-	glPushMatrix();
+	/*glPushMatrix();
 	glTranslatef(0.0, 0.0, -200.0);
 	drawRailway(400);
 	glPopMatrix();
@@ -524,8 +526,8 @@ void display() {
 	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.0, 0, 1, 0);
 	drawSignalPost();
-	glPopMatrix();
-
+	glPopMatrix();*/
+	drawTree();
 	glPopMatrix();
 
 	glutSwapBuffers();
