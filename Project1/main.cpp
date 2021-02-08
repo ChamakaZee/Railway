@@ -6,7 +6,7 @@
 #include <GL/glut.h>
 
 #define PI 3.1415927
-#define TX 20
+#define TX 23
 using namespace std;
 
 GLfloat moveX = 0.0f;
@@ -108,6 +108,9 @@ void loadExternalTextures()
 	image[17] = getbmp("res/light3.bmp");
 	image[18] = getbmp("res/bark.bmp");
 	image[19] = getbmp("res/pine.bmp");
+	image[20] = getbmp("res/road.bmp");
+	image[21] = getbmp("res/grass.bmp");
+	image[22] = getbmp("res/gate.bmp");
 
 	for (int i = 0; i < TX; i++) {
 		glBindTexture(GL_TEXTURE_2D, texture[i]);
@@ -120,7 +123,7 @@ void loadExternalTextures()
 }
 
 void init() {
-	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+	glClearColor(0.35f, 0.35f, 0.35f, 1.0f);
 	glGenTextures(TX, texture);
 	loadExternalTextures();
 
@@ -460,16 +463,30 @@ void drawTrain(int len) {
 }
 
 void drawTree() {
+	glEnable(GL_TEXTURE_2D);
+
 	glPushMatrix();
-
 	glRotatef(90, -1, 0, 0);
-	gluCylinder(gluNewQuadric(), 0.4, 0.4, 3.0, 50, 50);
 
+	// Trunk (Cylinder)
+	glBindTexture(GL_TEXTURE_2D, texture[18]);
+	GLUquadric* qobj = gluNewQuadric();
+	gluQuadricTexture(qobj, GL_TRUE);
+	gluCylinder(qobj, 0.4, 0.4, 3.0, 50, 50);
+	gluDeleteQuadric(qobj);
+
+	// Leaves (Cone)
 	glTranslatef(0.0, 0.0, 3.0);
-	gluCylinder(gluNewQuadric(), 2.0, 0.0, 5.0, 50, 50);
+	glBindTexture(GL_TEXTURE_2D, texture[19]);
+	qobj = gluNewQuadric();
+	gluQuadricTexture(qobj, GL_TRUE);
+	gluCylinder(qobj, 2.0, 0.0, 5.0, 50, 50);
+	gluDeleteQuadric(qobj);
 
+	// Lower (Circle)
 	glPushMatrix();
 	glRotatef(90, 0, -1, 0);
+	glBindTexture(GL_TEXTURE_2D, texture[19]);
 
 	glBegin(GL_POLYGON);
 	for (GLfloat angle = 0.0; angle < 2 * PI; angle = angle + 0.1) {
@@ -487,6 +504,8 @@ void drawTree() {
 	glPopMatrix();
 
 	glPopMatrix();
+
+	glDisable(GL_TEXTURE_2D);
 }
 
 void display() {
@@ -501,10 +520,10 @@ void display() {
 	glRotatef(rotY, 0.0f, 1.0f, 0.0f);
 	glRotatef(rotZ, 0.0f, 0.0f, 1.0f);
 
-	drawGrid();
-	drawAxes();
+	/*drawGrid();
+	drawAxes();*/
 
-	/*glPushMatrix();
+	glPushMatrix();
 	glTranslatef(0.0, 0.0, -200.0);
 	drawRailway(400);
 	glPopMatrix();
@@ -516,20 +535,63 @@ void display() {
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(30.0, 0.0, 0.0);
+	glTranslatef(30.0, 0.6, -10.0);
 	glScalef(6.5, 6.0, 6.5);
 	drawCar();
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(10.0, 0.0, 0.0);
+	glTranslatef(20.0, 0.0, 0.0);
 	glScalef(0.5, 0.5, 0.5);
 	glRotatef(-90.0, 0, 1, 0);
 	drawSignalPost();
-	glPopMatrix();*/
-	drawTree();
 	glPopMatrix();
 
+	glPushMatrix();
+	glTranslatef(0.0, 0.0, -100.0);
+	for (int i = 0; i < 5; i++) {
+		glPushMatrix();
+		glTranslatef(0.0, 0.0, 20.0  * i);
+
+		glPushMatrix();
+		glTranslatef(10.0, 0.0, 0.0);
+		glScalef(1.5, 2.0, 1.5);
+		drawTree();
+		glPopMatrix();
+
+		glPushMatrix();
+		glTranslatef(-5.0, 0.0, 0.0);
+		glScalef(1.5, 2.0, 1.5);
+		drawTree();
+		glPopMatrix();
+
+		glPopMatrix();
+	}
+	glPopMatrix();
+
+	glPushMatrix();
+	glTranslatef(0.0, 0.0, 5.0);
+	for (int i = 0; i < 5; i++) {
+		glPushMatrix();
+		glTranslatef(0.0, 0.0, 20.0  * i);
+
+		glPushMatrix();
+		glTranslatef(10.0, 0.0, 0.0);
+		glScalef(1.5, 2.0, 1.5);
+		drawTree();
+		glPopMatrix();
+
+		glPushMatrix();
+		glTranslatef(-5.0, 0.0, 0.0);
+		glScalef(1.5, 2.0, 1.5);
+		drawTree();
+		glPopMatrix();
+
+		glPopMatrix();
+	}
+	glPopMatrix();
+
+	glPopMatrix();
 	glutSwapBuffers();
 }
 
