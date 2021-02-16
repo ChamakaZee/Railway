@@ -508,6 +508,11 @@ void drawTree() {
 	glDisable(GL_TEXTURE_2D);
 }
 
+void drawGate() {
+	drawCube(0.0, 0.0, 0.0, 0.8, 2.0, 0.8, 0, 0, 0, 0, 0, 0);
+	drawCube(0.3, 1.4, 0.5, 0.2, 0.5, 18.0, 22, 22, 22, 22, 22, 22);
+}
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -547,6 +552,11 @@ void display() {
 	drawSignalPost();
 	glPopMatrix();
 
+	glPushMatrix();
+	glTranslatef(15.0, 0.0, -20.0);
+	drawGate();
+	glPopMatrix();
+	
 	glPushMatrix();
 	glTranslatef(0.0, 0.0, -100.0);
 	for (int i = 0; i < 5; i++) {
