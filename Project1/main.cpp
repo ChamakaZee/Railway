@@ -513,6 +513,28 @@ void drawGate() {
 	drawCube(0.3, 1.4, 0.5, 0.2, 0.5, 18.0, 22, 22, 22, 22, 22, 22);
 }
 
+void drawRoad() {
+	glEnable(GL_TEXTURE_2D);
+
+	glBindTexture(GL_TEXTURE_2D, texture[20]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-80.0, 0.0, -15.0);
+	glTexCoord2f(1.0, 0.0); glVertex3f(-80.0, 0.0, -5.0);
+	glTexCoord2f(1.0, 40.0); glVertex3f(80.0, 0.0, -5.0);
+	glTexCoord2f(0.0, 40.0); glVertex3f(80.0, 0.0, -15.0);
+	glEnd();
+
+	glBindTexture(GL_TEXTURE_2D, texture[21]);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0.0, 0.0); glVertex3f(-100.0, -0.001, -100.0);
+	glTexCoord2f(10.0, 0.0); glVertex3f(-100.0, -0.001, 100.0);
+	glTexCoord2f(10.0, 10.0); glVertex3f(100.0, -0.001, 100.0);
+	glTexCoord2f(0.0, 10.0); glVertex3f(100.0, -0.001, -100.0);
+	glEnd();
+
+	glDisable(GL_TEXTURE_2D);
+}
+
 void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -527,6 +549,7 @@ void display() {
 
 	/*drawGrid();
 	drawAxes();*/
+	drawRoad();
 
 	glPushMatrix();
 	glTranslatef(0.0, 0.0, -200.0);
@@ -556,7 +579,7 @@ void display() {
 	glTranslatef(15.0, 0.0, -20.0);
 	drawGate();
 	glPopMatrix();
-	
+
 	glPushMatrix();
 	glTranslatef(0.0, 0.0, -100.0);
 	for (int i = 0; i < 5; i++) {
