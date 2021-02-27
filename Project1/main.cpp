@@ -21,6 +21,8 @@ GLfloat camY = 0.0f;
 GLfloat camX = 0.0f;
 GLfloat camZ = 0.0f;
 
+int light = 0;
+
 GLUquadricObj* qobj;
 
 static unsigned int texture[TX];
@@ -122,8 +124,64 @@ void loadExternalTextures()
 	}
 }
 
+void initLighting() {
+	GLfloat specularReflectance[] = { 1.0, 1.0, 1.0, 1.0 };
+	glMaterialfv(GL_FRONT, GL_SPECULAR, specularReflectance);
+	glMateriali(GL_FRONT, GL_SHININESS, 30);
+
+	// Main
+	GLfloat L0_Ambient[] = { 0.3, 0.3, 0.3, 1.0 };
+	GLfloat L0_Diffuse[] = { 0.5, 0.5, 0.5, 1.0 };
+	GLfloat L0_postion[] = { 0.0, 20.0, 0.0, 1.0 };
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, L0_Ambient);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, L0_Diffuse);
+	glLightfv(GL_LIGHT0, GL_POSITION, L0_postion);
+
+	//Red
+	GLfloat L2_Diffuse[] = { 1.0, 0.0, 0.0, 1.0 };
+	GLfloat L2_Specular[] = { 1.0, 0.0, 0.0, 1.0 };
+	GLfloat L2_postion[] = { 20, 5.3, -0.6, 1.0 };
+	GLfloat L2_SpotDirection[] = { 1.0, 0.0, 0.0 };
+
+	glLightfv(GL_LIGHT2, GL_DIFFUSE, L2_Diffuse);
+	glLightfv(GL_LIGHT2, GL_SPECULAR, L2_Specular);
+	glLightfv(GL_LIGHT2, GL_POSITION, L2_postion);
+
+	glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, L2_SpotDirection);
+	glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 30.0);
+
+	//Yellow
+	GLfloat L3_Diffuse[] = { 1.0, 1.0, 0.0, 1.0 };
+	GLfloat L3_Specular[] = { 1.0, 1.0, 0.0, 1.0 };
+	GLfloat L3_postion[] = { 20, 5.3, -0.6, 1.0 };
+	GLfloat L3_SpotDirection[] = { 1.0, 0.0, 0.0 };
+
+	glLightfv(GL_LIGHT3, GL_DIFFUSE, L3_Diffuse);
+	glLightfv(GL_LIGHT3, GL_SPECULAR, L3_Specular);
+	glLightfv(GL_LIGHT3, GL_POSITION, L3_postion);
+
+	glLightfv(GL_LIGHT3, GL_SPOT_DIRECTION, L3_SpotDirection);
+	glLightf(GL_LIGHT3, GL_SPOT_CUTOFF, 30.0);
+
+	//Green
+	GLfloat L4_Diffuse[] = { 0.0, 1.0, 0.0, 1.0 };
+	GLfloat L4_Specular[] = { 0.0, 1.0, 0.0, 1.0 };
+	GLfloat L4_postion[] = { 20, 5.3, -0.6, 1.0 };
+	GLfloat L4_SpotDirection[] = { 1.0, 0.0, 0.0 };
+
+	glLightfv(GL_LIGHT4, GL_DIFFUSE, L4_Diffuse);
+	glLightfv(GL_LIGHT4, GL_SPECULAR, L4_Specular);
+	glLightfv(GL_LIGHT4, GL_POSITION, L4_postion);
+
+	glLightfv(GL_LIGHT4, GL_SPOT_DIRECTION, L4_SpotDirection);
+	glLightf(GL_LIGHT4, GL_SPOT_CUTOFF, 30.0);
+}
+
 void init() {
 	glClearColor(0.35f, 0.35f, 0.35f, 1.0f);
+	GLfloat globalAmbient[] = { 0.1, 0.1, 0.1, 1.0 };
+
 	glGenTextures(TX, texture);
 	loadExternalTextures();
 
@@ -133,6 +191,21 @@ void init() {
 	glEnable(GL_CULL_FACE);
 
 	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
+	glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
+
+
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	glHint(GL_LINE_SMOOTH_HINT, GL_DONT_CARE);
+	glEnable(GL_LINE_SMOOTH);
+	glEnable(GL_BLEND);
+
+	glEnable(GL_LIGHTING);
+
+	glShadeModel(GL_SMOOTH);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, globalAmbient);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_NORMALIZE);
 }
 
 void drawAxes() {
@@ -236,6 +309,7 @@ void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h, GLfloat l, 
 	glEnable(GL_TEXTURE_2D);
 
 	// front
+	glNormal3f(0.0, 0.0, 1.0);
 	glBindTexture(GL_TEXTURE_2D, texture[txFront]);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0); glVertex3f(x, y, z + l);
@@ -245,6 +319,7 @@ void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h, GLfloat l, 
 	glEnd();
 
 	// top
+	glNormal3f(0.0, 1.0, 0.0);
 	glBindTexture(GL_TEXTURE_2D, texture[txTop]);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0); glVertex3f(x, y + h, z);
@@ -254,6 +329,7 @@ void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h, GLfloat l, 
 	glEnd();
 
 	// back
+	glNormal3f(0.0, 0.0, -1.0);
 	glBindTexture(GL_TEXTURE_2D, texture[txBack]);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0); glVertex3f(x, y, z);
@@ -263,6 +339,7 @@ void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h, GLfloat l, 
 	glEnd();
 
 	// bottom
+	glNormal3f(0.0, -1.0, 0.0);
 	glBindTexture(GL_TEXTURE_2D, texture[txBottom]);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0); glVertex3f(x, y, z);
@@ -272,6 +349,7 @@ void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h, GLfloat l, 
 	glEnd();
 
 	// left
+	glNormal3f(-1.0, 0.0, 0.0);
 	glBindTexture(GL_TEXTURE_2D, texture[txLeft]);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0); glVertex3f(x, y, z);
@@ -281,6 +359,7 @@ void drawCube(GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h, GLfloat l, 
 	glEnd();
 
 	// right
+	glNormal3f(1.0, 0.0, 0.0);
 	glBindTexture(GL_TEXTURE_2D, texture[txRight]);
 	glBegin(GL_QUADS);
 	glTexCoord2f(0.0, 0.0); glVertex3f(x + w, y, z);
@@ -311,19 +390,19 @@ void drawSignalPost() {
 	glPushMatrix();
 	glTranslatef(0, 0.5, 10.8);
 	glRotatef(90, 0, 0, 1);
-	drawCylinder(0.5, 0.1, 200, 200, 14, 17, 14);
+	drawCylinder(0.5, 0.1, 200, 200, 14, (light == 3) ? 17 : 14, 14);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0, 0.5, 12);
 	glRotatef(90, 0, 0, 1);
-	drawCylinder(0.5, 0.1, 200, 200, 14, 16, 14);
+	drawCylinder(0.5, 0.1, 200, 200, 14, (light == 2) ? 16 : 14, 14);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0, 0.5, 13.2);
 	glRotatef(90, 0, 0, 1);
-	drawCylinder(0.5, 0.1, 200, 200, 14, 15, 14);
+	drawCylinder(0.5, 0.1, 200, 200, 14, (light == 1) ? 15 : 14, 14);
 	glPopMatrix();
 
 	drawCube(-1, -0.5, 10, 2, 1, 4, 14, 14, 14, 14, 14, 14);
@@ -549,6 +628,9 @@ void display() {
 
 	/*drawGrid();
 	drawAxes();*/
+
+	initLighting();
+
 	drawRoad();
 
 	glPushMatrix();
@@ -576,6 +658,12 @@ void display() {
 	glPopMatrix();
 
 	glPushMatrix();
+	glTranslatef(30.0, 0.0, 5.0);
+	glScalef(1.5, 2.0, 1.5);
+	drawTree();
+	glPopMatrix();
+
+	glPushMatrix();
 	glTranslatef(15.0, 0.0, -20.0);
 	drawGate();
 	glPopMatrix();
@@ -584,7 +672,7 @@ void display() {
 	glTranslatef(0.0, 0.0, -100.0);
 	for (int i = 0; i < 5; i++) {
 		glPushMatrix();
-		glTranslatef(0.0, 0.0, 20.0  * i);
+		glTranslatef(0.0, 0.0, 20.0 * i);
 
 		glPushMatrix();
 		glTranslatef(10.0, 0.0, 0.0);
@@ -606,7 +694,7 @@ void display() {
 	glTranslatef(0.0, 0.0, 5.0);
 	for (int i = 0; i < 5; i++) {
 		glPushMatrix();
-		glTranslatef(0.0, 0.0, 20.0  * i);
+		glTranslatef(0.0, 0.0, 20.0 * i);
 
 		glPushMatrix();
 		glTranslatef(10.0, 0.0, 0.0);
@@ -656,6 +744,41 @@ void keyboard(unsigned char key, int x, int y) {
 	}
 	else if (key == 'd') {
 		rotY -= 3.0;
+	}
+
+	if (key == '5')
+		glEnable(GL_LIGHT0);
+	if (key == '%')
+		glDisable(GL_LIGHT0);
+
+	if (key == '1')
+		light = 0;
+	if (key == '2')
+		light = 1;
+	if (key == '3')
+		light = 2;
+	if (key == '4')
+		light = 3;
+
+	if (light == 0) {
+		glDisable(GL_LIGHT2);
+		glDisable(GL_LIGHT3);
+		glDisable(GL_LIGHT4);
+	}
+	else if (light == 1) {
+		glEnable(GL_LIGHT2);
+		glDisable(GL_LIGHT3);
+		glDisable(GL_LIGHT4);
+	}
+	else if (light == 2) {
+		glDisable(GL_LIGHT2);
+		glEnable(GL_LIGHT3);
+		glDisable(GL_LIGHT4);
+	}
+	else if (light == 3) {
+		glDisable(GL_LIGHT2);
+		glDisable(GL_LIGHT3);
+		glEnable(GL_LIGHT4);
 	}
 
 	glutPostRedisplay();
