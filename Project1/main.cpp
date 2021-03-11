@@ -9,19 +9,24 @@
 #define TX 23
 using namespace std;
 
-GLfloat moveX = 0.0f;
+GLfloat moveX = -7.0f;
 GLfloat moveY = 0.0f;
-GLfloat moveZ = 0.0f;
+GLfloat moveZ = -36.0f;
 
 GLfloat rotX = 0.0f;
-GLfloat rotY = 0.0f;
+GLfloat rotY = -87.0f;
 GLfloat rotZ = 0.0f;
 
-GLfloat camY = 0.0f;
+GLfloat camY = 4.5f;
 GLfloat camX = 0.0f;
-GLfloat camZ = 0.0f;
+GLfloat camZ = 5.0f;
 
-int light = 0;
+GLfloat trainPos = -200.0f;
+GLfloat carX = 30.0f;
+GLfloat carY = -10.0f;
+
+int light = 3;
+bool gateOpened = true;
 
 GLUquadricObj* qobj;
 
@@ -176,6 +181,8 @@ void initLighting() {
 
 	glLightfv(GL_LIGHT4, GL_SPOT_DIRECTION, L4_SpotDirection);
 	glLightf(GL_LIGHT4, GL_SPOT_CUTOFF, 30.0);
+
+	glEnable(GL_LIGHT0);
 }
 
 void init() {
@@ -587,9 +594,16 @@ void drawTree() {
 	glDisable(GL_TEXTURE_2D);
 }
 
-void drawGate() {
+void drawGate(bool isOpened) {
 	drawCube(0.0, 0.0, 0.0, 0.8, 2.0, 0.8, 0, 0, 0, 0, 0, 0);
+
+	glPushMatrix();
+	if (isOpened) {
+		glRotatef(-90.0, 1, 0, 0);
+		glTranslatef(0.0, -2.0, 0.0);
+	}
 	drawCube(0.3, 1.4, 0.5, 0.2, 0.5, 18.0, 22, 22, 22, 22, 22, 22);
+	glPopMatrix();
 }
 
 void drawRoad() {
@@ -618,7 +632,7 @@ void display() {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();
-	gluLookAt(0.0 + camX, 2.0 + camY, 5.0 + camZ, 0, 0, 0, 0, 1.0, 0);
+	gluLookAt(camX, camY, camZ, 0, 0, 0, 0, 1.0, 0);
 
 	glTranslatef(moveX, moveY, moveZ);
 
@@ -639,13 +653,13 @@ void display() {
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(0.35, 1.6, 0.0);
+	glTranslatef(0.35, 1.6, trainPos);
 	glScalef(10.0, 10.0, 10.0);
 	drawTrain(5);
 	glPopMatrix();
 
 	glPushMatrix();
-	glTranslatef(30.0, 0.6, -10.0);
+	glTranslatef(carX, 0.6, carY);
 	glScalef(6.5, 6.0, 6.5);
 	drawCar();
 	glPopMatrix();
@@ -665,14 +679,14 @@ void display() {
 
 	glPushMatrix();
 	glTranslatef(15.0, 0.0, -20.0);
-	drawGate();
+	drawGate(gateOpened);
 	glPopMatrix();
 
 	glPushMatrix();
 	glTranslatef(0.0, 0.0, -100.0);
 	for (int i = 0; i < 5; i++) {
 		glPushMatrix();
-		glTranslatef(0.0, 0.0, 20.0 * i);
+		glTranslatef(0.0, 0.0, 20.0  * i);
 
 		glPushMatrix();
 		glTranslatef(10.0, 0.0, 0.0);
@@ -694,7 +708,7 @@ void display() {
 	glTranslatef(0.0, 0.0, 5.0);
 	for (int i = 0; i < 5; i++) {
 		glPushMatrix();
-		glTranslatef(0.0, 0.0, 20.0 * i);
+		glTranslatef(0.0, 0.0, 20.0  * i);
 
 		glPushMatrix();
 		glTranslatef(10.0, 0.0, 0.0);
@@ -717,17 +731,18 @@ void display() {
 }
 
 void keyboardSpecial(int key, int x, int y) {
-	if (key == GLUT_KEY_UP)
-		moveZ += 1;
-
-	if (key == GLUT_KEY_DOWN)
-		moveZ -= 1;
-
-	if (key == GLUT_KEY_LEFT)
-		moveX += 1;
-
-	if (key == GLUT_KEY_RIGHT)
-		moveX -= 1;
+	if (key == GLUT_KEY_DOWN) {
+		carX += 1;
+	}
+	else if (key == GLUT_KEY_UP) {
+		carX -= 1;
+	}
+	else if (key == GLUT_KEY_LEFT) {
+		carY += 1;
+	}
+	else if (key == GLUT_KEY_RIGHT) {
+		carY -= 1;
+	}
 
 	glutPostRedisplay();
 }
@@ -745,43 +760,70 @@ void keyboard(unsigned char key, int x, int y) {
 	else if (key == 'd') {
 		rotY -= 3.0;
 	}
-
-	if (key == '5')
-		glEnable(GL_LIGHT0);
-	if (key == '%')
-		glDisable(GL_LIGHT0);
-
-	if (key == '1')
-		light = 0;
-	if (key == '2')
-		light = 1;
-	if (key == '3')
-		light = 2;
-	if (key == '4')
-		light = 3;
-
-	if (light == 0) {
-		glDisable(GL_LIGHT2);
-		glDisable(GL_LIGHT3);
-		glDisable(GL_LIGHT4);
+	if (key == '8') {
+		moveZ += 1;
 	}
-	else if (light == 1) {
-		glEnable(GL_LIGHT2);
-		glDisable(GL_LIGHT3);
-		glDisable(GL_LIGHT4);
+	else if (key == '5') {
+		moveZ -= 1;
 	}
-	else if (light == 2) {
-		glDisable(GL_LIGHT2);
-		glEnable(GL_LIGHT3);
-		glDisable(GL_LIGHT4);
+	else if (key == '4') {
+		moveX += 1;
 	}
-	else if (light == 3) {
-		glDisable(GL_LIGHT2);
-		glDisable(GL_LIGHT3);
-		glEnable(GL_LIGHT4);
+	else if (key == '6') {
+		moveX -= 1;
 	}
 
 	glutPostRedisplay();
+}
+
+void timer(int x) {
+	if (trainPos > 150) {
+		trainPos = -200;
+	}
+	else {
+		trainPos += 1;
+
+		if (trainPos <= -140 && light != 3) {
+			light = 3;
+
+			glDisable(GL_LIGHT2);
+			glDisable(GL_LIGHT3);
+			glEnable(GL_LIGHT4);
+		}
+		else if (trainPos > -140 && trainPos <= -125 && light != 2) {
+			light = 2;
+
+			glDisable(GL_LIGHT2);
+			glEnable(GL_LIGHT3);
+			glDisable(GL_LIGHT4);
+		}
+		else if (trainPos > -125 && trainPos <= 5 && light != 1) {
+			light = 1;
+			gateOpened = false;
+
+			glEnable(GL_LIGHT2);
+			glDisable(GL_LIGHT3);
+			glDisable(GL_LIGHT4);
+		}
+		else if (trainPos > 5 && trainPos <= 20 && light != 2) {
+			light = 2;
+
+			glDisable(GL_LIGHT2);
+			glEnable(GL_LIGHT3);
+			glDisable(GL_LIGHT4);
+		}
+		else if (trainPos > 20 && light != 3) {
+			light = 3;
+			gateOpened = true;
+
+			glDisable(GL_LIGHT2);
+			glDisable(GL_LIGHT3);
+			glEnable(GL_LIGHT4);
+		}
+	}
+
+	glutPostRedisplay();
+	glutTimerFunc(60, timer, 1);
 }
 
 void changeSize(GLsizei w, GLsizei h) {
@@ -800,7 +842,7 @@ void changeSize(GLsizei w, GLsizei h) {
 int main(int argc, char** argv) {
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_DEPTH | GLUT_RGBA);
-	glutInitWindowSize(500, 500);
+	glutInitWindowSize(600, 600);
 	glutInitWindowPosition(150, 150);
 	glutCreateWindow("Railway Crossing");
 	glutDisplayFunc(display);
@@ -809,6 +851,7 @@ int main(int argc, char** argv) {
 	glutKeyboardFunc(keyboard);
 	glutSpecialFunc(keyboardSpecial);
 
+	glutTimerFunc(60.0, timer, 1);
 	init();
 	glutMainLoop();
 	return 0;
